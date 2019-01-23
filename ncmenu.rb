@@ -1,18 +1,22 @@
 require 'bundler/setup'
 require 'curses'
+require 'xdg'
 
-if Dir.exist?(Dir.home + '/.local/share/applications')
-  then desktop_entries = Dir[Dir.home + '/.local/share/applications/*.desktop']
-end
-if Dir.exist?('/usr/local/share/applications')
-  then desktop_entries << Dir['/usr/local/share/applications/*.destop']
-end
-if Dir.exist?('/usr/share/applications')
-  then desktop_entries << Dir['/usr/share/applications/*.desktop']
-end
+def update_list
+  desktop_entries = XDG['DATA'].select('/applications/*.desktop')
+  applications = []
 
-desktop_entries.each do |entry|
-  puts entry
+  puts 'Found these files:'
+  desktop_entries.each do |entry|
+    puts entry
+
+    next unless File.foreach(entry).grep(/(Type=Application)/).any?
+
+    applications << Application.new(
+      File.foreach(entry).grep(/(?<=Name\[\]=")(.*?(?="))/),
+      File.foreach(entry).grep(/(?<=Exec=).*/)
+    )
+  end
 end
 
 exit 0

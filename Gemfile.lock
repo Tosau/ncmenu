@@ -2,12 +2,14 @@ GEM
   remote: https://rubygems.org/
   specs:
     curses (1.2.7)
+    xdg (2.2.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   curses
+  xdg
 
 BUNDLED WITH
    2.0.1
